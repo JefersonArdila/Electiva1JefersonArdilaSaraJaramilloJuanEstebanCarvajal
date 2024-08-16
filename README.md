@@ -1,4 +1,4 @@
-# Nombre de la Materia
+# Electiva 1
 # Integrantes del Equipo
 - [Jeferson Arley Ardila Cardona](enlace-al-perfil-github)
 - [Sara Jaramillo Florez](enlace-al-perfil-github)
