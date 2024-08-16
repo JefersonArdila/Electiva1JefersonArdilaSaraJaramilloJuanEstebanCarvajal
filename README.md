@@ -1,6 +1,6 @@
 # Electiva 1
 # Integrantes del Equipo
-- [Jeferson Arley Ardila Cardona](enlace-al-perfil-github)
+- [Jeferson Arley Ardila Cardona](https://github.com/JefersonArdila)
 - [Sara Jaramillo Florez](enlace-al-perfil-github)
 - [Nombre del Integrante 3](enlace-al-perfil-github)
   
