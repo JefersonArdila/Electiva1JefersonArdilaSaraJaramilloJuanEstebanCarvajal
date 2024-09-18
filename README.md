@@ -2,7 +2,7 @@
 # Integrantes del Equipo
 - [Jeferson Arley Ardila Cardona](https://github.com/JefersonArdila)
 - [Sara Jaramillo Florez](enlace-al-perfil-github)
-- [Juan Esteban Carvajal Gómez](github.com/JUANESCARV )
+- [Juan Esteban Carvajal Gómez](https://github.com/JUANESCARV)
   
 # Tecnología en que se Desarrolló
 - Lenguaje de Programación: JavaScript
