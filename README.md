@@ -14,4 +14,4 @@ Descripción breve del proyecto.
 # Como Correr el proyecto
 1. **Clona el Repositorio:**
 ```bash
-git clone
+git clone https://github.com/JefersonArdila/Electiva1JefersonArdilaSaraJaramilloJuanEstebanCarvajal.git
