@@ -1,7 +1,7 @@
 # Electiva 1
 # Integrantes del Equipo
 - [Jeferson Arley Ardila Cardona](https://github.com/JefersonArdila)
-- [Sara Jaramillo Florez](enlace-al-perfil-github)
+- [Sara Jaramillo Florez](https://github.com/saritajaramilloflorez)
 - [Juan Esteban Carvajal Gómez](https://github.com/JUANESCARV)
   
 # Tecnología en que se Desarrolló
