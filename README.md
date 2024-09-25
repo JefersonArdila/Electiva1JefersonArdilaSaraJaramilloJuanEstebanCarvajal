@@ -6,7 +6,7 @@
   
 # Tecnología en que se Desarrolló
 - Lenguaje de Programación: JavaScript
-- Frameworks y Librerías: React.js, Boostrap, MUI
+- Frameworks y Librerías: React.js, Boostrap, MUI, styled-components
 - Entornos de Desarrollo: Visual Studio Code
   
   
