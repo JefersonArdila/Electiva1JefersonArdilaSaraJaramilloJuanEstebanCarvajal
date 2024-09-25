@@ -6,8 +6,9 @@
   
 # Tecnología en que se Desarrolló
 - Lenguaje de Programación: JavaScript
-- Frameworks y Librerías: React.js
+- Frameworks y Librerías: React.js, Boostrap, MUI
 - Entornos de Desarrollo: Visual Studio Code
+  
   
 # Nombre del Proyecto
 Descripción breve del proyecto.
