@@ -3,6 +3,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Widget, Header, DivIcon, DivContent, TrendingContainer, TrendingItem, Premium } from "./styled";
 import { Button } from 'style-components';
 
+/*Estructura para barra de la derecha, por ahora quemada, pend. agregar sug. o seguidores*/
+
 export const Widgets = () => {
 
   const [trendingTopics] = useState([

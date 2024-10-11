@@ -1,6 +1,8 @@
-// src/components/Login.jsx
+
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom'; // Asegúrate de que react-router-dom esté instalado
+import { Link } from 'react-router-dom';
+
+/*Login con Sara, reestructurar*/
 
 const Login = ({ onLogin }) => {
     const [email, setEmail] = useState('');

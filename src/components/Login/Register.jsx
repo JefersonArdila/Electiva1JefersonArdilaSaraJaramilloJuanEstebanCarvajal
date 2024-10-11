@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase"; // Ajusta la ruta según tu estructura
+import { auth } from "../../firebase";
+
+/*Login con Sara, reestructurar*/
 
 const Register = ({ onRegister }) => {
   const [email, setEmail] = useState("");

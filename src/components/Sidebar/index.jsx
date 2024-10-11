@@ -14,7 +14,7 @@ import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 import { Button } from '@mui/material';
 
 
-
+/*estructura para principal de la izquierda, pend definir algunas funcionalidades*/
 
 export const Sidebar = () => {
   return (
