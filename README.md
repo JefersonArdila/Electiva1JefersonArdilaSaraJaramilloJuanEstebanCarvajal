@@ -22,6 +22,7 @@
 - Lenguaje de Programación: JavaScript
 - Frameworks y Librerías: React.js, Boostrap, MUI, styled-components
 - Entornos de Desarrollo: Visual Studio Code
+- Firebase
   
 # Como Correr el proyecto
 1. **Clona el Repositorio:**
