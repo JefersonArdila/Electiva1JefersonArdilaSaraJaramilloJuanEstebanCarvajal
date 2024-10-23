@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Electiva 1
 # Integrantes del Equipo
 - [Jeferson Arley Ardila Cardona](https://github.com/JefersonArdila)
@@ -16,4 +15,3 @@ Descripción breve del proyecto.
 1. **Clona el Repositorio:**
 ```bash
 git clone https://github.com/JefersonArdila/Electiva1JefersonArdilaSaraJaramilloJuanEstebanCarvajal.git
-=======
