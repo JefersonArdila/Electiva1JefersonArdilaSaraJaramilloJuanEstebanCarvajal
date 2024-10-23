@@ -9,6 +9,8 @@ import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 
 export const Home = () => {
     const [post, setPost] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [postsPerPage] = useState(10);
     const [selectedTab, setSelectedTab] = useState('for-you');
 
     const getPost = () => {
@@ -19,15 +21,28 @@ export const Home = () => {
             const docs = [];
             res.forEach(doc => {
                 docs.push({ ...doc.data(), id: doc.id });
-                console.log({ ...doc.data(), id: doc.id });
             });
             setPost(docs);
         });
     };
 
     useEffect(() => {
-        getPost()
-    }, [])
+        getPost();
+    }, []);
+
+    // Calcular los índices de los posts actuales
+    const indexOfLastPost = currentPage * postsPerPage;
+    const indexOfFirstPost = indexOfLastPost - postsPerPage;
+    const currentPosts = post.slice(indexOfFirstPost, indexOfLastPost);
+
+    // Cambiar de página
+    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+    // Calcular el número total de páginas
+    const pageNumbers = [];
+    for (let i = 1; i <= Math.ceil(post.length / postsPerPage); i++) {
+        pageNumbers.push(i);
+    }
 
     return (
         <Container>
@@ -51,7 +66,7 @@ export const Home = () => {
             </Header>
 
             <TweetBox />
-            {post.map((post) => (
+            {currentPosts.map((post) => (
                 <Posts
                     key={post.id}
                     name={post.name}
@@ -62,6 +77,14 @@ export const Home = () => {
                     imagePost={post.imagePost}
                 />
             ))}
+
+            <div className="pagination">
+                {pageNumbers.map(number => (
+                    <button key={number} onClick={() => paginate(number)}>
+                        {number}
+                    </button>
+                ))}
+            </div>
         </Container>
     );
 };

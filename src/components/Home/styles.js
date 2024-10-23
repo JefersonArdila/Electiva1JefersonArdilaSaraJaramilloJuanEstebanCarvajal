@@ -23,6 +23,14 @@ export const Container = styled.div`
   @media only screen and (max-width:1004px){
     flex: 1;
   }
+
+  .pagination button {
+    color: #1d9bf0;
+    background-color: #2f3336;
+    margin: 0 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
 `;
 
 export const Header = styled.header`

@@ -12,11 +12,18 @@ import BoltIcon from '@mui/icons-material/Bolt';
 import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 import { Button } from '@mui/material';
+import { signOut } from 'firebase/auth'; 
+import { auth } from '../../firebase'; // Ajusta la ruta si es necesario
+
 
 
 /*estructura para principal de la izquierda, pend definir algunas funcionalidades*/
 
 export const Sidebar = () => {
+
+  const handleLogout = async () => {
+    await signOut(auth); // Cierra sesión
+  };
   return (
   <Contenedor>
     
@@ -39,6 +46,8 @@ export const Sidebar = () => {
     <br></br>
     <br></br>
     <Button variant='outlined' fullWidth>Post</Button>
+    <button onClick={handleLogout}>Cerrar sesión</button>
+
   </Contenedor>
   )
 }
