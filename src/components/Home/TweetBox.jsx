@@ -6,7 +6,7 @@ import { Button } from '@mui/material';
 import { db, storage } from '../../firebase'; 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; 
 import User from '../../img/user.jpg';
-import { Timestamp } from 'firebase/firestore';
+
 import { collection, addDoc } from 'firebase/firestore'; 
 
 export const TweetBox = () => {
@@ -16,12 +16,20 @@ export const TweetBox = () => {
   const [tweetImg, setTweetImg] = useState('');
 
 
-  useEffect(() =>{
-    const perfil = JSON.parse(localStorage.getItem('Perfil'))
-    if(perfil){
-      setImages(perfil)
+  
+
+  useEffect(() => {
+    const storedUsername = localStorage.getItem('username');
+    if (storedUsername) {
+      setUsuario(storedUsername);
     }
-  },[])
+  
+    const perfil = JSON.parse(localStorage.getItem('Perfil'));
+    if (perfil) {
+      setImages(perfil);
+    }
+  }, []);
+  
 
   useEffect(() =>{
     localStorage.setItem('Perfil',JSON.stringify(images))
@@ -55,7 +63,7 @@ export const TweetBox = () => {
 
       setTweetImg('')
       setTweetMsg('')
-      setUsuario('')
+
     }
 
     

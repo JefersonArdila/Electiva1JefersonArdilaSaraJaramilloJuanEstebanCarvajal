@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { auth, db } from '../../firebase'; // Importa la configuración de Firebase
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore'; // Importa Firestore
+import { doc, setDoc, getDoc } from 'firebase/firestore'; // Importa Firestore
 
 const Auth = ({ setUser }) => {
   const [email, setEmail] = useState('');
@@ -20,12 +20,24 @@ const Auth = ({ setUser }) => {
         await setDoc(doc(db, "users", userCredential.user.uid), {
           username: username, // Usa el nombre de usuario ingresado
           email: email,
-          // Otros campos que desees almacenar
         });
+
+        // Guarda el nombre de usuario en el localStorage
+        localStorage.setItem('username', username);
+        setUser(username); // Setea el usuario para usarlo en otros componentes
       } else {
-        await signInWithEmailAndPassword(auth, email, password);
+        // Iniciar sesión con Firebase Auth
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        
+        // Obtén los datos del usuario desde Firestore
+        const userDoc = await getDoc(doc(db, "users", userCredential.user.uid));
+        
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          localStorage.setItem('username', userData.username); // Almacena el nombre de usuario en el localStorage
+          setUser(userData.username); // Setea el usuario para usarlo en otros componentes
+        }
       }
-      setUser(username || email); // Guarda el nombre de usuario o el email en el estado principal
     } catch (error) {
       alert(error.message);
     }

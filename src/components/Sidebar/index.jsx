@@ -46,6 +46,7 @@ export const Sidebar = () => {
     <br></br>
     <br></br>
     <Button variant='outlined' fullWidth>Post</Button>
+    
     <button onClick={handleLogout}>Cerrar sesión</button>
 
   </Contenedor>

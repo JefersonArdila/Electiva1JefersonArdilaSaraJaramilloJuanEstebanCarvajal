@@ -6,9 +6,11 @@ import { Widgets } from "./components/Widgets";
 import Auth from "./components/Login/Auth"; // Ajusta la ruta aquí
 import { auth } from './firebase'; 
 import { onAuthStateChanged } from 'firebase/auth';
+import Welcome from "./components/Login/welcome";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [showAuth, setShowAuth] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -21,6 +23,10 @@ function App() {
     return () => unsubscribe();
   }, []);
 
+  const handleNavigate = () => {
+    setShowAuth(true); // Cambia el estado para mostrar la página de autenticación
+  };
+
   return (
     <div className="App">
       <GlobalStyles />
@@ -31,7 +37,13 @@ function App() {
           <Widgets />
         </>
       ) : (
-        <Auth setUser={setUser} /> 
+        <>
+          {showAuth ? (
+            <Auth setUser={setUser} />
+          ) : (
+            <Welcome onNavigate={handleNavigate} /> // Muestra la página de bienvenida
+          )}
+        </>
       )}
     </div>
   );
