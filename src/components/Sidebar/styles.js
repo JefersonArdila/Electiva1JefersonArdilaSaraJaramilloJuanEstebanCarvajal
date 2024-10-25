@@ -1,5 +1,33 @@
 import styled, {} from 'styled-components'
 
+/* Se agregan estilos para el contenedor de seguidos y seguidores*/
+
+export const UserInfoContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #2f3336;
+`;
+
+export const UserStats = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  h4 {
+    color: #71767b;
+    margin: 0;
+    font-size: 14px;
+  }
+
+  p {
+    color: #fff;
+    font-size: 18px;
+    margin: 0;
+    font-weight: 600;
+  }
+`;
+
 export const Contenedor = styled.div`
 
 background-color: #000000 !important;
