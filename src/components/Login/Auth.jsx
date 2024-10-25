@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { auth, db } from '../../firebase'; // Importa la configuración de Firebase
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore'; // Importa Firestore
+import {Contenedor} from "./stylesLogin"
+import XIcon from '@mui/icons-material/X';
 
 const Auth = ({ setUser }) => {
   const [email, setEmail] = useState('');
@@ -32,38 +34,61 @@ const Auth = ({ setUser }) => {
   };
 
   return (
-    <div>
-      <h2>{isRegistering ? 'Registro' : 'Inicio de sesión'}</h2>
+    <>
+    <Contenedor>
+    <div >
+      <div className="contenedorX">
+      <XIcon className='XLogo'/>
+      </div>
+      <h2 className='h2Login'>{isRegistering ? 'Registro' : 'Inicia sesión en X '}</h2>
+      <div className="contenedorbtn">
+        <button className='btn-Google' type="submit">Google</button>
+        </div>
+        <h5>---------------- O ----------------</h5>
       <form onSubmit={handleSubmit}>
         {isRegistering && ( // Solo muestra el campo de nombre de usuario al registrarse
-          <input
+           <div className="contenedorbtn">
+          <input className='inputNombre'
             type="text"
             placeholder="Nombre de usuario"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             required
           />
+          </div>
         )}
+        <div className="contenedorbtn">
         <input
+          className='inputEmail'
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <input
+        </div>
+        <div className="contenedorbtn">
+        <input className='inputPassword'
           type="password"
           placeholder="Contraseña"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        <button type="submit">{isRegistering ? 'Registrar' : 'Iniciar sesión'}</button>
+        </div>
+        <div className="contenedorbtn">
+        <button className='btn-Login' type="submit">{isRegistering ? 'Registrar' : 'Siguiente'}</button>
+        </div>
       </form>
-      <button onClick={() => setIsRegistering(!isRegistering)}>
+      <div>
+      
+      <button  className='btn-CreateAccount' onClick={() => setIsRegistering(!isRegistering)}>
         {isRegistering ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
       </button>
+      </div>
     </div>
+    </Contenedor>
+    </>
   );
 };
 

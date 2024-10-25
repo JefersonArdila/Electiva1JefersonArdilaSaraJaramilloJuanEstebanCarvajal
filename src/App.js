@@ -6,9 +6,12 @@ import { Widgets } from "./components/Widgets";
 import Auth from "./components/Login/Auth"; // Ajusta la ruta aquí
 import { auth } from './firebase'; 
 import { onAuthStateChanged } from 'firebase/auth';
+import { ClonApp } from "./components/Login/ClonApp";
+import { Route, Routes } from "react-router-dom";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [showAuth, setShowAuth] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -20,7 +23,9 @@ function App() {
     });
     return () => unsubscribe();
   }, []);
-
+  const handleNavigate = () => {
+    setShowAuth(true); 
+  };
   return (
     <div className="App">
       <GlobalStyles />
@@ -31,7 +36,13 @@ function App() {
           <Widgets />
         </>
       ) : (
-        <Auth setUser={setUser} /> 
+        <>
+          {showAuth ? (
+            <Auth setUser={setUser} />
+          ) : (
+            <ClonApp onNavigate={handleNavigate} /> // Muestra la página de bienvenida
+          )}
+        </>
       )}
     </div>
   );
