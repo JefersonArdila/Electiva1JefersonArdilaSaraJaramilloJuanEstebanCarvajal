@@ -22,14 +22,14 @@ const Auth = ({ setUser }) => {
         await setDoc(doc(db, "users", userCredential.user.uid), {
           username: username, // Usa el nombre de usuario ingresado
           email: email,
-          // Otros campos que desees almacenar
+          
         });
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
       setUser(username || email); // Guarda el nombre de usuario o el email en el estado principal
     } catch (error) {
-      alert(error.message);
+      alert("El usuario ya existe" );
     }
   };
 
@@ -40,13 +40,13 @@ const Auth = ({ setUser }) => {
       <div className="contenedorX">
       <XIcon className='XLogo'/>
       </div>
-      <h2 className='h2Login'>{isRegistering ? 'Registro' : 'Inicia sesión en X '}</h2>
+      <h2 className='h2Login'>{isRegistering ? 'Crea tu cuenta' : 'Inicia sesión en X '}</h2>
       <div className="contenedorbtn">
         <button className='btn-Google' type="submit">Google</button>
         </div>
-        <h5>---------------- O ----------------</h5>
+        <h5>______________ O _____________</h5>
       <form onSubmit={handleSubmit}>
-        {isRegistering && ( // Solo muestra el campo de nombre de usuario al registrarse
+        {isRegistering && ( 
            <div className="contenedorbtn">
           <input className='inputNombre'
             type="text"

@@ -4,8 +4,8 @@ import { Home } from "./components/Home";
 import { Sidebar } from "./components/Sidebar";
 import { Widgets } from "./components/Widgets";
 import Auth from "./components/Login/Auth"; // Ajusta la ruta aquí
-import { auth } from './firebase'; 
-import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from "./firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import { ClonApp } from "./components/Login/ClonApp";
 import { Route, Routes } from "react-router-dom";
 
@@ -16,7 +16,7 @@ function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setUser(user.email); 
+        setUser(user.email);
       } else {
         setUser(null);
       }
@@ -24,7 +24,7 @@ function App() {
     return () => unsubscribe();
   }, []);
   const handleNavigate = () => {
-    setShowAuth(true); 
+    setShowAuth(true);
   };
   return (
     <div className="App">

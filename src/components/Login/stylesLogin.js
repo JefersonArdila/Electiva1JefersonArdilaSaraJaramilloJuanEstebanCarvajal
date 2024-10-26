@@ -11,12 +11,10 @@ export const Contenedor = styled.div`
 
   .XLogo {
     width: 20%;
-  height: auto;
-  display: block;
-  margin: auto; 
+    height: auto;
+    display: block;
+    margin: auto;
   }
-
- 
 
   .h2Login {
     color: white;
@@ -44,43 +42,47 @@ export const Contenedor = styled.div`
   .btn-CreateAccount {
     background-color: black;
     border: none;
-    color: white; 
+    color: white;
     text-align: center;
     margin-top: 10px;
-    }
+  }
 
-    .btn-Google{
-    padding: 10px 100px;
+  .btn-Google {
+    padding: 10px 120px;
     border-radius: 9999px;
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    background-color:black;
+    background-color: white;
     border: 1px solid #71767b;
-    color: white;
+    color: black;
     margin-top: 5px;
-    }
-.inputNombre{
-background-color: black;
- border-color: black;
-  margin-bottom: 10px;
-  padding: 10px 45px; 
-  font-size: 16px;
-  margin-top:50px;
-}
- .inputEmail{
- border-color: black;
-  margin-bottom: 10px;
-  padding: 10px 45px; 
-  font-size: 16px; 
- }
+  }
+  .inputNombre {
+    background-color: black;
+    border-color: #71767b;
+    margin-bottom: 10px;
+    padding: 10px 45px;
+    font-size: 16px;
+    margin-top: 50px;
+    color: white;
+  }
+  .inputEmail {
+    background-color: black;
+    border-color: #71767b;
+    margin-bottom: 10px;
+    padding: 10px 45px;
+    font-size: 16px;
+    color: white;
+  }
 
   .inputPassword {
- border-color: black;
-  margin-bottom: 10px;
-  padding: 10px 45px; 
-  font-size: 16px; 
-  
+    background-color: black;
+    border-color: #71767b;
+    margin-bottom: 10px;
+    padding: 10px 45px;
+    font-size: 16px;
+    color: white;
   }
 
   .contenedorPassword {
