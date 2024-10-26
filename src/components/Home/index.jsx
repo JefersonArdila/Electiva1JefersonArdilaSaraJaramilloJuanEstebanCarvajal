@@ -5,6 +5,8 @@ import { Posts } from "./Posts";
 import { db } from "../../firebase";
 import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 
+/*Estructura para incluir caja de post y tweets*/
+
 export const Home = () => {
     const [post, setPost] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
@@ -49,12 +51,14 @@ export const Home = () => {
                     <Tab 
                         active={selectedTab === 'for-you'}
                         onClick={() => setSelectedTab('for-you')}
+                        /*pendiente punto trabajo final*/
                     >
                         For you
                     </Tab>
                     <Tab 
                         active={selectedTab === 'following'}
                         onClick={() => setSelectedTab('following')}
+                        /*pendiente punto trabajo final*/
                     >
                         Following
                     </Tab>

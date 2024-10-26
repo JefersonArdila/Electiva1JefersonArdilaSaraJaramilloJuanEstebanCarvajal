@@ -17,7 +17,7 @@ import { auth } from '../../firebase'; // Ajusta la ruta si es necesario
 
 
 
-
+/*estructura para principal de la izquierda, pend definir algunas funcionalidades*/
 
 export const Sidebar = () => {
 
