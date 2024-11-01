@@ -53,9 +53,9 @@ export const Contenedor = styled.div`
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    background-color: white;
+    background-color:black;
     border: 1px solid #71767b;
-    color: black;
+    color: white;
     margin-top: 5px;
   }
   .inputNombre {
@@ -64,7 +64,7 @@ export const Contenedor = styled.div`
     margin-bottom: 10px;
     padding: 10px 45px;
     font-size: 16px;
-    margin-top: 50px;
+    margin-top: 20px;
     color: white;
   }
   .inputEmail {

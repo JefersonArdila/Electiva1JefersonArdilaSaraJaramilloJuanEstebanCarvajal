@@ -1,93 +1,200 @@
-import React, { useState } from 'react';
-import { auth, db } from '../../firebase'; // Importa la configuración de Firebase
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore'; // Importa Firestore
-import {Contenedor} from "./stylesLogin"
-import XIcon from '@mui/icons-material/X';
+import React, { useState } from "react";
+import { auth, db } from "../../firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
+import {
+  doc,
+  setDoc,
+  getDoc,
+  query,
+  collection,
+  where,
+  getDocs,
+} from "firebase/firestore";
+import { Contenedor } from "./stylesLogin";
+import XIcon from "@mui/icons-material/X";
 
 const Auth = ({ setUser }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [username, setUsername] = useState(''); // Campo para el nombre de usuario
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const [isRegistering, setIsRegistering] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const provider = new GoogleAuthProvider();
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      localStorage.setItem("username", user.displayName);
+
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (!docSnap.exists()) {
+        await setDoc(doc(db, "users", user.uid), {
+          username: user.displayName,
+          email: user.email,
+        });
+      }
+
+      setUser(user.displayName || user.email);
+    } catch (error) {
+      setErrorMessage(
+        "Error al iniciar sesión con Google. Por favor, intenta de nuevo."
+      );
+      console.error("Error al iniciar sesión con Google:", error);
+    }
+  };
+
+  const checkUsernameExists = async (username) => {
+    const q = query(collection(db, "users"), where("username", "==", username));
+    const querySnapshot = await getDocs(q);
+    return !querySnapshot.empty;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setErrorMessage("");
+
     try {
       if (isRegistering) {
-        // Crea el usuario en Firebase Auth
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        
-        // Guarda el nombre de usuario en Firestore
+        const usernameExists = await checkUsernameExists(username);
+        if (usernameExists) {
+          setErrorMessage("El nombre de usuario ya está en uso");
+          return;
+        }
+
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
         await setDoc(doc(db, "users", userCredential.user.uid), {
-          username: username, // Usa el nombre de usuario ingresado
+          username: username,
           email: email,
-          
         });
       } else {
         await signInWithEmailAndPassword(auth, email, password);
       }
-      setUser(username || email); // Guarda el nombre de usuario o el email en el estado principal
+      setUser(username || email);
     } catch (error) {
-      alert("El usuario ya existe" );
+      if (!isRegistering) {
+        switch (error.code) {
+          case "auth/user-not-found":
+            setErrorMessage("El usuario no existe");
+            break;
+          case "auth/wrong-password":
+            setErrorMessage("Contraseña incorrecta");
+            break;
+          case "auth/invalid-email":
+            setErrorMessage("Correo electrónico inválido");
+            break;
+          default:
+            setErrorMessage(
+              "Error en el inicio de sesión, por favor intenta de nuevo"
+            );
+            break;
+        }
+      } else {
+        switch (error.code) {
+          case "auth/email-already-in-use":
+            setErrorMessage("El usuario ya existe");
+            break;
+          case "auth/invalid-email":
+            setErrorMessage("Correo electrónico inválido");
+            break;
+          case "auth/weak-password":
+            setErrorMessage("La contraseña es muy débil");
+            break;
+          default:
+            setErrorMessage("Error en el registro, por favor intenta de nuevo");
+            break;
+        }
+      }
     }
   };
 
   return (
     <>
-    <Contenedor>
-    <div >
-      <div className="contenedorX">
-      <XIcon className='XLogo'/>
-      </div>
-      <h2 className='h2Login'>{isRegistering ? 'Crea tu cuenta' : 'Inicia sesión en X '}</h2>
-      <div className="contenedorbtn">
-        <button className='btn-Google' type="submit">Google</button>
-        </div>
-        <h5>______________ O _____________</h5>
-      <form onSubmit={handleSubmit}>
-        {isRegistering && ( 
-           <div className="contenedorbtn">
-          <input className='inputNombre'
-            type="text"
-            placeholder="Nombre de usuario"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
+      <Contenedor>
+        <div>
+          <div className="contenedorX">
+            <XIcon className="XLogo" />
           </div>
-        )}
-        <div className="contenedorbtn">
-        <input
-          className='inputEmail'
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+          <h2 className="h2Login">
+            {isRegistering ? "Crea tu cuenta" : "Inicia sesión en X"}
+          </h2>
+          {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}{" "}
+          {/* Muestra mensaje de error */}
+          <div className="contenedorbtn">
+            <button
+              className="btn-Google"
+              type="button"
+              onClick={handleGoogleSignIn}
+            >
+              Google
+            </button>
+          </div>
+          <h5>______________ O _____________</h5>
+          <form onSubmit={handleSubmit}>
+            {isRegistering && (
+              <div className="contenedorbtn">
+                <input
+                  className="inputNombre"
+                  type="text"
+                  placeholder="Nombre de usuario"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+            )}
+            <div className="contenedorbtn">
+              <input
+                className="inputEmail"
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="contenedorbtn">
+              <input
+                className="inputPassword"
+                type="password"
+                placeholder="Contraseña"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            <div className="contenedorbtn">
+              <button className="btn-Login" type="submit">
+                {isRegistering ? "Registrar" : "Siguiente"}
+              </button>
+            </div>
+          </form>
+          <div>
+            <button
+              className="btn-CreateAccount"
+              onClick={() => setIsRegistering(!isRegistering)}
+            >
+              {isRegistering
+                ? "¿Ya tienes cuenta? Inicia sesión"
+                : "¿No tienes cuenta? Regístrate"}
+            </button>
+          </div>
         </div>
-        <div className="contenedorbtn">
-        <input className='inputPassword'
-          type="password"
-          placeholder="Contraseña"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
-        </div>
-        <div className="contenedorbtn">
-        <button className='btn-Login' type="submit">{isRegistering ? 'Registrar' : 'Siguiente'}</button>
-        </div>
-      </form>
-      <div>
-      
-      <button  className='btn-CreateAccount' onClick={() => setIsRegistering(!isRegistering)}>
-        {isRegistering ? '¿Ya tienes cuenta? Inicia sesión' : '¿No tienes cuenta? Regístrate'}
-      </button>
-      </div>
-    </div>
-    </Contenedor>
+      </Contenedor>
     </>
   );
 };

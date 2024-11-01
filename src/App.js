@@ -3,11 +3,10 @@ import GlobalStyles from "./styles/GlobalStyles";
 import { Home } from "./components/Home";
 import { Sidebar } from "./components/Sidebar";
 import { Widgets } from "./components/Widgets";
-import Auth from "./components/Login/Auth"; // Ajusta la ruta aquí
+import Auth from "./components/Login/Auth";
 import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { ClonApp } from "./components/Login/ClonApp";
-import { Route, Routes } from "react-router-dom";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -40,7 +39,7 @@ function App() {
           {showAuth ? (
             <Auth setUser={setUser} />
           ) : (
-            <ClonApp onNavigate={handleNavigate} /> // Muestra la página de bienvenida
+            <ClonApp onNavigate={handleNavigate} />
           )}
         </>
       )}

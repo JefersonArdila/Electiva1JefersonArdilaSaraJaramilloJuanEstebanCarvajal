@@ -1,6 +1,47 @@
 import { Contenedor } from "./stylesClonApp";
+import { auth, db } from "../../firebase";
+import React, { useState } from "react";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
+import {
+  doc,
+  setDoc,
+  getDoc,
+} from "firebase/firestore";
 
-export const ClonApp = ({ onNavigate }) => {
+export const ClonApp = ({ onNavigate, setUser }) => {
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const provider = new GoogleAuthProvider();
+  
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+
+      localStorage.setItem("username", user.displayName);
+
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+
+      if (!docSnap.exists()) {
+        await setDoc(doc(db, "users", user.uid), {
+          username: user.displayName,
+          email: user.email,
+        });
+      }
+
+      setUser(user.displayName || user.email);
+    } catch (error) {
+      setErrorMessage(
+        "Error al iniciar sesión con Google. Por favor, intenta de nuevo."
+      );
+      console.error("Error al iniciar sesión con Google:", error);
+    }
+  };
+
   return (
     <>
       <div>
@@ -19,9 +60,13 @@ export const ClonApp = ({ onNavigate }) => {
             </h1>
             <h3 className="h3Login">Únete Hoy</h3>
             <div className="contenedorbtn">
-              <button className="btn-Google" onClick={""}>
-                Google
-              </button>
+            <button
+              className="btn-Google"
+              type="button"
+              onClick={handleGoogleSignIn}
+            >
+              Google
+            </button>
             </div>
             <div className="contenedorbtn">
               <button className="btn-CreateAccount" onClick={""}>
