@@ -1,164 +1,145 @@
-import React, { useState,useEffect } from 'react';
-import { Tweetbox, Div, Avatar, Form, DivBox, File } from "./styles";
-import BrokenImageOutlinedIcon from '@mui/icons-material/BrokenImageOutlined';
-import GifBoxOutlinedIcon from '@mui/icons-material/GifBoxOutlined';
-import { Button } from '@mui/material';
-import { db, storage } from '../../firebase'; 
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; 
-import User from '../../img/user.jpg';
-
-import { collection, addDoc } from 'firebase/firestore'; 
+import React, { useState, useEffect } from "react";
+import {
+  Tweetbox,
+  Div,
+  Avatar,
+  Form,
+  DivBox,
+  File,
+  Notification,
+} from "./styles";
+import BrokenImageOutlinedIcon from "@mui/icons-material/BrokenImageOutlined";
+import GifBoxOutlinedIcon from "@mui/icons-material/GifBoxOutlined";
+import { Button } from "@mui/material";
+import { db, storage, auth } from "../../firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { doc, setDoc, getDoc, collection, addDoc } from "firebase/firestore";
+import User from "../../img/user.jpg";
 
 export const TweetBox = () => {
-  const [tweetMsg, setTweetMsg]= useState('');
-  const[usuario,setUsuario] = useState('');
-  const [images, setImages] = useState('');
-  const [tweetImg, setTweetImg] = useState('');
-
-
-  
+  const [tweetMsg, setTweetMsg] = useState("");
+  const [usuario, setUsuario] = useState("");
+  const [images, setImages] = useState("");
+  const [tweetImg, setTweetImg] = useState("");
+  const [mostrarNotificacion, setMostrarNotificacion] = useState(false);
 
   useEffect(() => {
-    const storedUsername = localStorage.getItem('username');
+    const storedUsername = localStorage.getItem("username");
     if (storedUsername) {
       setUsuario(storedUsername);
     }
-  
-    const perfil = JSON.parse(localStorage.getItem('Perfil'));
-    if (perfil) {
-      setImages(perfil);
-    }
+
+    const fetchUserProfile = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        const userRef = doc(db, "users", user.uid);
+        const userDoc = await getDoc(userRef);
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setImages(userData.profilePicture || User); // Usa la imagen o la imagen por defecto
+        }
+      }
+    };
+
+    fetchUserProfile();
   }, []);
-  
 
-  useEffect(() =>{
-    localStorage.setItem('Perfil',JSON.stringify(images))
-  },[images])
-
-  
-
-  const sendTweet = async (e) =>{
-    e.preventDefault()
-    if(usuario.length < 1){
-      return alert("Debes ingresar un nombre de usuario")
+  const updateProfilePicture = async (url) => {
+    const user = auth.currentUser;
+    if (user) {
+      const userRef = doc(db, "users", user.uid);
+      await setDoc(userRef, { profilePicture: url }, { merge: true });
     }
-    if (images.length < 1){
-      return alert("Debes ingresar una foto de usuario")
-    }
-    if(tweetMsg.length < 5){
-      return alert("Tu tweet debe ser mayor a 5 caracteres")
-    }
-    if(tweetMsg.length > 300){
-      return alert("Tu tweet debe ser menor a 300 caracteres")
-    }else{
-      await addDoc(collection(db, 'posts'), {
-        name: usuario,
-        username: usuario,
-        verified: true,
-        text: tweetMsg,
-        timestamp: Date.now(),
-        avatar: images,
-        imagePost: tweetImg
-      });
-
-      setTweetImg('')
-      setTweetMsg('')
-
-    }
-
-    
-  }
+  };
 
   const handleSubir = (e) => {
     const file = e.target.files[0];
-    if (!file) return; 
+    if (!file) return;
 
-    const storageRef = ref(storage, `/avatar/${file.name}`); 
-
-    uploadBytes(storageRef, file).then(() => {
-    
-      getDownloadURL(storageRef)
-      .then(url => {
-        setImages(url); 
-      }).catch(error => {
-        console.log('Error al obtener la URL:', error);
+    const storageRef = ref(storage, `/avatar/${file.name}`);
+    uploadBytes(storageRef, file)
+      .then(() => getDownloadURL(storageRef))
+      .then((url) => {
+        setImages(url);
+        updateProfilePicture(url); // Guarda la URL en Firestore
+      })
+      .catch((error) => {
+        console.error("Error al cargar la imagen:", error);
       });
-    }).catch(error => {
-      console.log('Error al subir el archivo:', error);
-    });
   };
 
-
-    const handlePost = (e) =>{
-      const file = e.target.files[0];
-    if (!file) return; 
-
-    const storageRef = ref(storage, `/Post/${file.name}`); 
-
-    uploadBytes(storageRef, file).then(() => {
-      
-      getDownloadURL(storageRef)
-      .then(url => {
-        setTweetImg(url); 
-      }).catch(error => {
-        console.log('Error al obtener la URL:', error);
-      });
-    }).catch(error => {
-      console.log('Error al subir el archivo:', error);
+  const enviarTweet = async (e) => {
+    e.preventDefault();
+    if (tweetMsg.length < 5 || tweetMsg.length > 280) {
+      return alert("Tu tweet debe estar entre 5 y 280 caracteres.");
+    }
+    await addDoc(collection(db, "posts"), {
+      name: usuario,
+      username: usuario,
+      verified: true,
+      text: tweetMsg,
+      timestamp: Date.now(),
+      avatar: images,
+      imagePost: tweetImg,
     });
+    setTweetImg("");
+    setTweetMsg("");
+    setMostrarNotificacion(true);
+    setTimeout(() => setMostrarNotificacion(false), 3000);
+  };
 
-    };
+  const handlePost = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
+    const storageRef = ref(storage, `/Post/${file.name}`);
+    uploadBytes(storageRef, file)
+      .then(() => getDownloadURL(storageRef))
+      .then((url) => setTweetImg(url))
+      .catch((error) => {
+        console.log("Error al cargar la imagen:", error);
+      });
+  };
 
   return (
     <Tweetbox>
+      {mostrarNotificacion && <Notification>Your post was published!</Notification>}
       <Form>
         <Div>
-          {
-            images ? <Avatar src={images} alt=''/>:<Avatar src={User} alt=''/>
-          }
-          
+          <Avatar src={images || User} alt="User avatar" />
           <File type="file" onChange={handleSubir} />
-          <div className='columns'>
+          <div className="columns">
             <input
               type="text"
-              placeholder="Déjenos un tweet"
+              placeholder="Déjanos un tweet"
               value={tweetMsg}
-              onChange={e => setTweetMsg(e.target.value)}
+              onChange={(e) => setTweetMsg(e.target.value)}
             />
             <input
               type="text"
               placeholder="Usuario"
               value={usuario}
-              onChange={e => setUsuario(e.target.value)}
-
+              onChange={(e) => setUsuario(e.target.value)}
             />
           </div>
         </Div>
-        
+
         <Div>
           <DivBox>
-
             <File type="file" primary onChange={handlePost} />
             <BrokenImageOutlinedIcon />
-            
             <GifBoxOutlinedIcon />
-            
           </DivBox>
-          <File type="file"onChange={handlePost} />
+
           <input
             type="text"
-              placeholder="Opcional: Url de la imagen/gif"
-              value={tweetImg}
-              onChange={e=>setTweetImg(e.target.value)}
+            placeholder="Opcional: Url de la imagen/gif"
+            value={tweetImg}
+            onChange={(e) => setTweetImg(e.target.value)}
           />
-          <Button
-          onClick={sendTweet}
-          type='submit'
-
-          >
-            
-            Post</Button>
+          <Button onClick={enviarTweet} type="submit">
+            Post
+          </Button>
         </Div>
       </Form>
     </Tweetbox>

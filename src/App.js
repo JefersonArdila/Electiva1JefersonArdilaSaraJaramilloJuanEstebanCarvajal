@@ -3,10 +3,11 @@ import GlobalStyles from "./styles/GlobalStyles";
 import { Home } from "./components/Home";
 import { Sidebar } from "./components/Sidebar";
 import { Widgets } from "./components/Widgets";
-import Auth from "./components/Login/Auth"; // Ajusta la ruta aquí
-import { auth } from './firebase'; 
-import { onAuthStateChanged } from 'firebase/auth';
-import Welcome from "./components/Login/welcome";
+import Auth from "./components/Login/Auth"; 
+import { auth } from "./firebase";
+import { onAuthStateChanged } from "firebase/auth";
+import { ClonApp } from "./components/Login/ClonApp";
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -15,18 +16,16 @@ function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        setUser(user.email); 
+        setUser(user.email);
       } else {
         setUser(null);
       }
     });
     return () => unsubscribe();
   }, []);
-
   const handleNavigate = () => {
-    setShowAuth(true); // Cambia el estado para mostrar la página de autenticación
+    setShowAuth(true);
   };
-
   return (
     <div className="App">
       <GlobalStyles />
@@ -41,12 +40,13 @@ function App() {
           {showAuth ? (
             <Auth setUser={setUser} />
           ) : (
-            <Welcome onNavigate={handleNavigate} /> // Muestra la página de bienvenida
+            <ClonApp onNavigate={handleNavigate} /> 
           )}
         </>
       )}
     </div>
   );
 }
+
 
 export default App;
