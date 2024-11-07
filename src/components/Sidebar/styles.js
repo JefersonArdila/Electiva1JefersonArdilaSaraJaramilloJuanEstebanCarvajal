@@ -126,3 +126,20 @@ background-color: var(--Hover);
    color: ${props => props.active ? "var(#2f3336)" : ""};
 }
 `
+export const UserHeader = styled.div`
+  text-align: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #e0e0e0;
+  
+  h2 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+  }
+`;

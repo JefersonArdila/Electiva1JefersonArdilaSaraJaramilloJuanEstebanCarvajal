@@ -1,13 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import GlobalStyles from "./styles/GlobalStyles";
 import { Home } from "./components/Home";
 import { Sidebar } from "./components/Sidebar";
 import { Widgets } from "./components/Widgets";
+import Auth from "./components/Login/Auth"; // Ajusta la ruta aquí
+import { auth } from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 function App() {
+  const [user, setUser] = useState(null);
   const [selectedTab, setSelectedTab] = useState('for-you'); // Para manejar las pestañas seleccionadas
   const [showFollowingUsers, setShowFollowingUsers] = useState(false); // Estado para mostrar los usuarios seguidos
   const [showFollowersUsers, setShowFollowersUsers] = useState(false); // Estado para mostrar los seguidores
+
+  // Monitoreo de autenticación del usuario
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user.email);
+      } else {
+        setUser(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Función para manejar cuando se hace clic en "Following" desde el Sidebar
   const handleFollowingClick = () => {
@@ -32,19 +48,22 @@ function App() {
 
   return (
     <div className="App">
-      {/* Sidebar con las funciones para manejar los clics en "Following" y "Followers" */}
-      <Sidebar onFollowingClick={handleFollowingClick} onFollowersClick={handleFollowersClick} />
-
-      {/* Home pasa la pestaña seleccionada, la función de cambio de pestaña y los estados de los usuarios seguidos/seguidores */}
-      <Home
-        selectedTab={selectedTab}
-        setSelectedTab={handleTabChange}
-        showFollowingUsers={showFollowingUsers}
-        showFollowersUsers={showFollowersUsers}
-      />
-
-      <Widgets />
       <GlobalStyles />
+      {user ? (
+        <>
+          <Sidebar onFollowingClick={handleFollowingClick} onFollowersClick={handleFollowersClick} />
+          <Home
+            selectedTab={selectedTab}
+            setSelectedTab={handleTabChange}
+            showFollowingUsers={showFollowingUsers}
+            showFollowersUsers={showFollowersUsers}
+            username={user}
+          />
+          <Widgets />
+        </>
+      ) : (
+        <Auth setUser={setUser} />
+      )}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Contenedor, UserInfoContainer, UserStats } from './styles';
+import { Contenedor, UserInfoContainer, UserStats, UserHeader } from './styles';
 import XIcon from '@mui/icons-material/X';
 import { IconOption } from './IconOption';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
@@ -12,47 +12,68 @@ import BoltIcon from '@mui/icons-material/Bolt';
 import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
 import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 import { Button } from '@mui/material';
+import { signOut, onAuthStateChanged } from 'firebase/auth'; 
+import { auth, db } from '../../firebase';
+import { doc, getDoc } from 'firebase/firestore';
 
 export const Sidebar = ({ onFollowingClick, onFollowersClick }) => {
-  // Estados locales para los contadores
   const [followingCount, setFollowingCount] = useState(13);
   const [followersCount, setFollowersCount] = useState(15);
+  const [user, setUser] = useState(null); 
 
-  // Restablecer los contadores cuando se cambia de página
+ 
   useEffect(() => {
-    setFollowingCount(13);  // Valor quemado original para Following
-    setFollowersCount(15);  // Valor quemado original para Followers
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        // Obtener los datos del usuario desde Firestore
+        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setUser({
+            FullName: userData.fullName || "Nombre Completo", // Ajuste para nombres cuando no estaba fiuncionalidad
+            Username: userData.username,
+          });
+        }
+      } else {
+        setUser(null);
+      }
+    });
+    return () => unsubscribe();
   }, []);
 
-  // Función para aumentar el contador de "Following"
-  const handleFollowingIncrement = () => {
-    setFollowingCount(prev => prev + 1);  // Aumentamos el contador
-    onFollowingClick();  // Ejecutamos la función para mostrar la lista de Following
-  };
+ 
+  useEffect(() => {
+    setFollowingCount(13);
+    setFollowersCount(15);
+  }, []);
 
-  // Función para aumentar el contador de "Followers"
-  const handleFollowersIncrement = () => {
-    setFollowersCount(prev => prev + 1);  // Aumentamos el contador
-    onFollowersClick();  // Ejecutamos la función para mostrar la lista de Followers
+  const handleLogout = async () => {
+    await signOut(auth);
   };
 
   return (
     <Contenedor>
       <XIcon className='XLogo' />
 
+      {/* Muestra el nombre completo y el username del usuario */}
+      {user && (
+        <UserHeader>
+          <h2>{user.FullName}</h2>
+          <p>@{user.Username}</p>
+        </UserHeader>
+      )}
+
       <UserInfoContainer>
         {/* Sección de "Following" */}
         <UserStats>
           <h4>Following</h4>
-          {/* Aumenta el contador de Following al hacer clic */}
-          <p onClick={handleFollowingIncrement} style={{ cursor: 'pointer' }}>{followingCount}</p>
+          <p onClick={onFollowingClick} style={{ cursor: 'pointer' }}>{followingCount}</p>
         </UserStats>
 
         {/* Sección de "Followers" */}
         <UserStats>
           <h4>Followers</h4>
-          {/* Aumenta el contador de Followers al hacer clic */}
-          <p onClick={handleFollowersIncrement} style={{ cursor: 'pointer' }}>{followersCount}</p>
+          <p onClick={onFollowersClick} style={{ cursor: 'pointer' }}>{followersCount}</p>
         </UserStats>
       </UserInfoContainer>
 
@@ -73,8 +94,8 @@ export const Sidebar = ({ onFollowingClick, onFollowersClick }) => {
       <br />
       <br />
 
-      {/* Botón para publicar un nuevo tweet */}
-      <Button variant='outlined' fullWidth>Post</Button>
+      {/* Botón para cerrar sesión */}
+      <Button variant='outlined' fullWidth onClick={handleLogout}>Cerrar sesión</Button>
     </Contenedor>
   );
 };
