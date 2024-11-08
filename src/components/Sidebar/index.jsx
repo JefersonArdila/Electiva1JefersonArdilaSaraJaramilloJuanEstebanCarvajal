@@ -6,46 +6,46 @@ import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 import NotificationsNoneRoundedIcon from '@mui/icons-material/NotificationsNoneRounded';
 import MailOutlineRoundedIcon from '@mui/icons-material/MailOutlineRounded';
-import BrowserNotSupportedRoundedIcon from '@mui/icons-material/BrowserNotSupportedRounded';
-import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
-import BoltIcon from '@mui/icons-material/Bolt';
-import PermIdentityOutlinedIcon from '@mui/icons-material/PermIdentityOutlined';
-import MoreHorizOutlinedIcon from '@mui/icons-material/MoreHorizOutlined';
 import { Button } from '@mui/material';
-import { signOut, onAuthStateChanged } from 'firebase/auth'; 
+import { signOut } from 'firebase/auth';
 import { auth, db } from '../../firebase';
 import { doc, getDoc } from 'firebase/firestore';
 
-export const Sidebar = ({ onFollowingClick, onFollowersClick }) => {
-  const [followingCount, setFollowingCount] = useState(13);
-  const [followersCount, setFollowersCount] = useState(15);
-  const [user, setUser] = useState(null); 
+export const Sidebar = ({
+  onFollowingClick,
+  onFollowersClick,
+  selectedUser,
+  onLogoClick,
+}) => {
+  const [followingCount, setFollowingCount] = useState(0);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [user, setUser] = useState(null);
 
- 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      if (currentUser) {
-        // Obtener los datos del usuario desde Firestore
-        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+    const fetchUserData = async () => {
+      const userId = selectedUser ? selectedUser.username : auth.currentUser?.uid;
+      if (userId) {
+        const userDoc = await getDoc(doc(db, 'users', userId));
         if (userDoc.exists()) {
           const userData = userDoc.data();
           setUser({
-            FullName: userData.fullName || "Nombre Completo", // Ajuste para nombres cuando no estaba fiuncionalidad
+            FullName: userData.fullName || 'Nombre Completo',
             Username: userData.username,
           });
+          setFollowingCount(userData.usersFollowing ? userData.usersFollowing.length : 0);
+          setFollowersCount(userData.usersFollowers ? userData.usersFollowers.length : 0);
+        } else {
+          setUser({
+            FullName: 'Nombre Completo',
+            Username: 'Username',
+          });
+          setFollowingCount(0);
+          setFollowersCount(0);
         }
-      } else {
-        setUser(null);
       }
-    });
-    return () => unsubscribe();
-  }, []);
-
- 
-  useEffect(() => {
-    setFollowingCount(13);
-    setFollowersCount(15);
-  }, []);
+    };
+    fetchUserData();
+  }, [selectedUser]);
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -53,9 +53,8 @@ export const Sidebar = ({ onFollowingClick, onFollowersClick }) => {
 
   return (
     <Contenedor>
-      <XIcon className='XLogo' />
+      <XIcon className="XLogo" onClick={onLogoClick} style={{ cursor: 'pointer' }} />
 
-      {/* Muestra el nombre completo y el username del usuario */}
       {user && (
         <UserHeader>
           <h2>{user.FullName}</h2>
@@ -64,13 +63,10 @@ export const Sidebar = ({ onFollowingClick, onFollowersClick }) => {
       )}
 
       <UserInfoContainer>
-        {/* Sección de "Following" */}
         <UserStats>
           <h4>Following</h4>
           <p onClick={onFollowingClick} style={{ cursor: 'pointer' }}>{followingCount}</p>
         </UserStats>
-
-        {/* Sección de "Followers" */}
         <UserStats>
           <h4>Followers</h4>
           <p onClick={onFollowersClick} style={{ cursor: 'pointer' }}>{followersCount}</p>
@@ -79,23 +75,14 @@ export const Sidebar = ({ onFollowingClick, onFollowersClick }) => {
 
       <br />
 
-      {/* Opciones del menú */}
-      <IconOption active text="Home" Icon={HomeRoundedIcon} />
+      <IconOption active text="Home" Icon={HomeRoundedIcon} onClick={onLogoClick} />
       <IconOption text="Explore" Icon={SearchRoundedIcon} />
       <IconOption text="Notifications" Icon={NotificationsNoneRoundedIcon} />
       <IconOption text="Messages" Icon={MailOutlineRoundedIcon} />
-      <IconOption text="Grok" Icon={BrowserNotSupportedRoundedIcon} />
-      <IconOption text="Communities" Icon={PeopleOutlineIcon} />
-      <IconOption primary text="Premium" Icon={XIcon} />
-      <IconOption primary text="Business" Icon={BoltIcon} />
-      <IconOption primary text="Profile" Icon={PermIdentityOutlinedIcon} />
-      <IconOption primary text="More" Icon={MoreHorizOutlinedIcon} />
 
-      <br />
-      <br />
-
-      {/* Botón para cerrar sesión */}
-      <Button variant='outlined' fullWidth onClick={handleLogout}>Cerrar sesión</Button>
+      <Button variant="outlined" fullWidth onClick={handleLogout}>
+        Cerrar sesión
+      </Button>
     </Contenedor>
   );
 };
