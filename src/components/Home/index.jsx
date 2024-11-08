@@ -28,15 +28,15 @@ export const Home = () => {
         getPost();
     }, []);
 
-    // Calcular los índices de los posts actuales
+    
     const indexOfLastPost = currentPage * postsPerPage;
     const indexOfFirstPost = indexOfLastPost - postsPerPage;
     const currentPosts = post.slice(indexOfFirstPost, indexOfLastPost);
 
-    // Cambiar de página
+    
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-    // Calcular el número total de páginas
+    
     const pageNumbers = [];
     for (let i = 1; i <= Math.ceil(post.length / postsPerPage); i++) {
         pageNumbers.push(i);

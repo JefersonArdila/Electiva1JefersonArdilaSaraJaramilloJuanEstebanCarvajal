@@ -8,13 +8,13 @@ import XIcon from '@mui/icons-material/X';
 const Auth = ({ setUser }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [username, setUsername] = useState(''); // Campo para el nombre de usuario
+  const [username, setUsername] = useState(''); 
   const [isRegistering, setIsRegistering] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(''); // Mensaje de error
+  const [errorMessage, setErrorMessage] = useState(''); 
 
   const provider = new GoogleAuthProvider();
 
-  // Función para manejar el inicio de sesión con Google
+  
   const handleGoogleSignIn = async () => {
     try {
       const result = await signInWithPopup(auth, provider);
@@ -60,22 +60,22 @@ const Auth = ({ setUser }) => {
           return;
         }
 
-        // Crea el usuario en Firebase Auth
+        
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
-        // Guarda el nombre de usuario en Firestore
+        
         await setDoc(doc(db, "users", userCredential.user.uid), {
           username: username,
           email: email,
         });
       } else {
-        // Intenta iniciar sesión
+        
         await signInWithEmailAndPassword(auth, email, password);
       }
-      setUser(username || email); // Guarda el nombre de usuario o el email en el estado principal
+      setUser(username || email); 
     } catch (error) {
       if (!isRegistering) {
-        // Errores específicos al iniciar sesión
+        
         switch (error.code) {
           case 'auth/user-not-found':
             setErrorMessage("El usuario no existe");

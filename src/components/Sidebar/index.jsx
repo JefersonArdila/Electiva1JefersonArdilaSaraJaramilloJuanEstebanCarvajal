@@ -51,7 +51,7 @@ export const Sidebar = () => {
       <br></br>
       <br></br>
       <Button onClick={handleLogout} variant="outlined" fullWidth>
-        Cerrar sesión
+        log out
       </Button>
     </Contenedor>
   );

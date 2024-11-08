@@ -36,7 +36,7 @@ export const TweetBox = () => {
         const userDoc = await getDoc(userRef);
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          setImages(userData.profilePicture || User); // Usa la imagen o la imagen por defecto
+          setImages(userData.profilePicture || User); 
         }
       }
     };
@@ -61,7 +61,7 @@ export const TweetBox = () => {
       .then(() => getDownloadURL(storageRef))
       .then((url) => {
         setImages(url);
-        updateProfilePicture(url); // Guarda la URL en Firestore
+        updateProfilePicture(url); 
       })
       .catch((error) => {
         console.error("Error al cargar la imagen:", error);
